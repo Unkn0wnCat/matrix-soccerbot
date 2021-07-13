@@ -1,0 +1,297 @@
+{
+    "language": "en",
+    "messages": [
+        {
+            "id": "matrix-soccerbot has started.",
+            "message": "matrix-soccerbot has started.",
+            "translation": "matrix-soccerbot has started.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "# Game \u003cfont color=\"{Team1Color}\"\u003e{TeamName}\u003c/font\u003e vs. \u003cfont color=\"{Team2Color}\"\u003e{TeamName_1}\u003c/font\u003e ***(\u003cfont color=\"{Team1Color}\"\u003e{ScoreTeam1}\u003c/font\u003e:\u003cfont color=\"{Team2Color}\"\u003e{ScoreTeam2}\u003c/font\u003e)***",
+            "message": "# Game \u003cfont color=\"{Team1Color}\"\u003e{TeamName}\u003c/font\u003e vs. \u003cfont color=\"{Team2Color}\"\u003e{TeamName_1}\u003c/font\u003e ***(\u003cfont color=\"{Team1Color}\"\u003e{ScoreTeam1}\u003c/font\u003e:\u003cfont color=\"{Team2Color}\"\u003e{ScoreTeam2}\u003c/font\u003e)***",
+            "translation": "# Game \u003cfont color=\"{Team1Color}\"\u003e{TeamName}\u003c/font\u003e vs. \u003cfont color=\"{Team2Color}\"\u003e{TeamName_1}\u003c/font\u003e ***(\u003cfont color=\"{Team1Color}\"\u003e{ScoreTeam1}\u003c/font\u003e:\u003cfont color=\"{Team2Color}\"\u003e{ScoreTeam2}\u003c/font\u003e)***",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "Team1Color",
+                    "string": "%[5]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 5,
+                    "expr": "team1Color"
+                },
+                {
+                    "id": "TeamName",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "match.Team1.TeamName"
+                },
+                {
+                    "id": "Team2Color",
+                    "string": "%[6]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 6,
+                    "expr": "team2Color"
+                },
+                {
+                    "id": "TeamName_1",
+                    "string": "%[2]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 2,
+                    "expr": "match.Team2.TeamName"
+                },
+                {
+                    "id": "Team1Color",
+                    "string": "%[5]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 5,
+                    "expr": "team1Color"
+                },
+                {
+                    "id": "ScoreTeam1",
+                    "string": "%[3]d",
+                    "type": "int",
+                    "underlyingType": "int",
+                    "argNum": 3,
+                    "expr": "latestGoal.ScoreTeam1"
+                },
+                {
+                    "id": "Team2Color",
+                    "string": "%[6]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 6,
+                    "expr": "team2Color"
+                },
+                {
+                    "id": "ScoreTeam2",
+                    "string": "%[4]d",
+                    "type": "int",
+                    "underlyingType": "int",
+                    "argNum": 4,
+                    "expr": "latestGoal.ScoreTeam2"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": "**Game Completed** -",
+            "message": "**Game Completed** -",
+            "translation": "**Game Completed** -",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "*Game began {RFC850}*",
+            "message": "*Game began {RFC850}*",
+            "translation": "*Game began {RFC850}*",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "RFC850",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "matchTime.Format(time.RFC850)"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": "*Game beginning {RFC850}*",
+            "message": "*Game beginning {RFC850}*",
+            "translation": "*Game beginning {RFC850}*",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "RFC850",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "matchTime.Format(time.RFC850)"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": "## **Goals**",
+            "message": "## **Goals**",
+            "translation": "## **Goals**",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "*No goals yet*",
+            "message": "*No goals yet*",
+            "translation": "*No goals yet*",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "unknown",
+            "message": "unknown",
+            "translation": "unknown",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "(Penalty)",
+            "message": "(Penalty)",
+            "translation": "(Penalty)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "(Overtime)",
+            "message": "(Overtime)",
+            "translation": "(Overtime)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "(Own goal)",
+            "message": "(Own goal)",
+            "translation": "(Own goal)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "* {ScoringTs} - \u003cfont color=\"{Team1Color}\"\u003e{ScoreTeam1}\u003c/font\u003e:\u003cfont color=\"{Team2Color}\"\u003e{ScoreTeam2}\u003c/font\u003e - Goal for {ScoringTeam} by {GoalGetterName}{BonusInfos}",
+            "message": "* {ScoringTs} - \u003cfont color=\"{Team1Color}\"\u003e{ScoreTeam1}\u003c/font\u003e:\u003cfont color=\"{Team2Color}\"\u003e{ScoreTeam2}\u003c/font\u003e - Goal for {ScoringTeam} by {GoalGetterName}{BonusInfos}",
+            "translation": "* {ScoringTs} - \u003cfont color=\"{Team1Color}\"\u003e{ScoreTeam1}\u003c/font\u003e:\u003cfont color=\"{Team2Color}\"\u003e{ScoreTeam2}\u003c/font\u003e - Goal for {ScoringTeam} by {GoalGetterName}{BonusInfos}",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "ScoringTs",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "scoringTs"
+                },
+                {
+                    "id": "Team1Color",
+                    "string": "%[2]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 2,
+                    "expr": "team1Color"
+                },
+                {
+                    "id": "ScoreTeam1",
+                    "string": "%[4]d",
+                    "type": "int",
+                    "underlyingType": "int",
+                    "argNum": 4,
+                    "expr": "goal.ScoreTeam1"
+                },
+                {
+                    "id": "Team2Color",
+                    "string": "%[3]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 3,
+                    "expr": "team2Color"
+                },
+                {
+                    "id": "ScoreTeam2",
+                    "string": "%[5]d",
+                    "type": "int",
+                    "underlyingType": "int",
+                    "argNum": 5,
+                    "expr": "goal.ScoreTeam2"
+                },
+                {
+                    "id": "ScoringTeam",
+                    "string": "%[6]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 6,
+                    "expr": "scoringTeam"
+                },
+                {
+                    "id": "GoalGetterName",
+                    "string": "%[7]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 7,
+                    "expr": "goal.GoalGetterName"
+                },
+                {
+                    "id": "BonusInfos",
+                    "string": "%[8]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 8,
+                    "expr": "bonusInfos"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": "## Results",
+            "message": "## Results",
+            "translation": "## Results",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "* **Halftime result",
+            "message": "* **Halftime result",
+            "translation": "* **Halftime result",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "* **Result after 90 minutes",
+            "message": "* **Result after 90 minutes",
+            "translation": "* **Result after 90 minutes",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "* **Result after extended Time",
+            "message": "* **Result after extended Time",
+            "translation": "* **Result after extended Time",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "* **Result after overtime",
+            "message": "* **Result after overtime",
+            "translation": "* **Result after overtime",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "* **Result after penalty shots",
+            "message": "* **Result after penalty shots",
+            "translation": "* **Result after penalty shots",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "* **Result",
+            "message": "* **Result",
+            "translation": "* **Result",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Data provided by [OpenLigaDB.de](https://www.openligadb.de) | [Sourcecode](https://github.com/Unkn0wnCat/matrix-soccerbot)",
+            "message": "Data provided by [OpenLigaDB.de](https://www.openligadb.de) | [Sourcecode](https://github.com/Unkn0wnCat/matrix-soccerbot)",
+            "translation": "Data provided by [OpenLigaDB.de](https://www.openligadb.de) | [Sourcecode](https://github.com/Unkn0wnCat/matrix-soccerbot)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        }
+    ]
+}

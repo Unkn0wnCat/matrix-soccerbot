@@ -7,6 +7,11 @@ import (
 	"log"
 )
 
+type RoomConfig struct {
+	RoomID	string	`yaml:"id"`
+	SubscribedLeagues []string `yaml:"leagues"`
+}
+
 type Config struct {
 	Language string `yaml:"language"`
     Bot struct {
@@ -14,7 +19,40 @@ type Config struct {
 		Username string `yaml:"username"`
 		AccessKey string `yaml:"accessKey"`
 		RoomID string `yaml:"roomID"`
+		Password string `yaml:"password"`
+		Rooms	[]RoomConfig `yaml:"rooms"`
 	} `yaml:"bot"`
+}
+
+func SaveConfig(config Config) (error) {
+	file, err := os.OpenFile("config.yaml", os.O_RDWR|os.O_CREATE, 0666)
+    if err != nil {
+		return err
+    }
+
+	defer file.Close()
+
+	file.Truncate(0)
+	if err != nil {
+        return err
+    }
+
+	_, err = file.Seek(0, 0)
+	if err != nil {
+        return err
+    }
+
+	content, err := yaml.Marshal(config)
+	if err != nil {
+        return err
+    }
+
+	_, err = file.Write(content)
+	if err != nil {
+        return err
+    }
+
+	return nil
 }
 
 func GetConfig() (*Config, error) {
@@ -50,7 +88,6 @@ func GetConfig() (*Config, error) {
 
 	content, err := yaml.Marshal(&config)
 	if err != nil {
-		log.Println("hi")
         return nil, err
     }
 

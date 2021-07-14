@@ -9,6 +9,7 @@ import (
 	"log"    
 	"golang.org/x/text/language"
     "golang.org/x/text/message"
+	"os"
 )
 
 type formattedMessage struct {
@@ -27,6 +28,7 @@ func main() {
 	configPtr, err := GetConfig()
 
 	if err != nil {
+		log.Println("matrix-soccerbot can neither read nor create a configuration file")
 		log.Fatal(err)
 	}
 
@@ -36,12 +38,47 @@ func main() {
 
 	p := message.NewPrinter(lang)
 
-	p.Printf("matrix-soccerbot has started.")
+	if config.Bot.Homeserver == "" || config.Bot.Username == "" {
+		log.Println(p.Sprintf("matrix-soccerbot is missing user identification (homeserver / username)"))
+		os.Exit(1)
+	}
+
+	if config.Bot.AccessKey == "" && config.Bot.Password == "" {
+		log.Println(p.Sprintf("matrix-soccerbot is missing user credentials (access-key / password)"))
+		log.Println(p.Sprintf("Please provide either an access-key or password"))
+		os.Exit(1)
+	}
+
+	log.Println(p.Sprintf("matrix-soccerbot has started."))
 
 	client, err := mautrix.NewClient(config.Bot.Homeserver, id.NewUserID(config.Bot.Username, config.Bot.Homeserver), config.Bot.AccessKey)
 
 	if err != nil {
+		log.Println(p.Sprintf("matrix-soccerbot couldn't initialize matrix client, please check credentials"))
 		log.Fatal(err)
+		os.Exit(1)
+	}
+
+	if config.Bot.AccessKey == "" {
+		res, err := client.Login(&mautrix.ReqLogin{
+			Type:             "m.login.password",
+			Identifier:       mautrix.UserIdentifier{Type: mautrix.IdentifierTypeUser, User: config.Bot.Username},
+			Password:         config.Bot.Password,
+			StoreCredentials: true,
+			InitialDeviceDisplayName: "github.com/Unkn0wnCat/matrix-soccerbot",
+		})
+
+		if err != nil {
+			log.Println(p.Sprintf("matrix-soccerbot couldn't sign in, please check credentials"))
+			log.Fatal(err)
+			os.Exit(1)
+		}
+
+		accessToken := res.AccessToken
+
+		config.Bot.AccessKey = accessToken
+
+		SaveConfig(config)
 	}
 
 	go client.Sync()

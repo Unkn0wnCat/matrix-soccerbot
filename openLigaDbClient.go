@@ -1,78 +1,78 @@
 package main
 
 import (
-	"net/http"
-	"log"
 	"encoding/json"
 	"io"
+	"log"
+	"net/http"
 	"strconv"
 	"time"
 )
 
 type Group struct {
-	GroupName 		string 	`json:"groupName"`
-	GroupOrderID 	int 	`json:"groupOderID"`
-	GroupID 		int 	`json:"groupID"`
+	GroupName    string `json:"groupName"`
+	GroupOrderID int    `json:"groupOderID"`
+	GroupID      int    `json:"groupID"`
 }
 
 type Team struct {
-	TeamID			int		`json:"teamId"`
-	TeamName		string	`json:"teamName"`
-	ShortName		string	`json:"shortName"`
-	TeamIconURL		string	`json:"teamIconUrl"`
-	teamGroupName	string	`json:"teamGroupName"`
+	TeamID        int    `json:"teamId"`
+	TeamName      string `json:"teamName"`
+	ShortName     string `json:"shortName"`
+	TeamIconURL   string `json:"teamIconUrl"`
+	teamGroupName string `json:"teamGroupName"`
 }
 
 const (
-	ResultHalftime 	= 1
-	ResultEnd 		= 2
-	ResultExtended	= 3
-	ResultOvertime 	= 4
-	ResultEleven 	= 5
+	ResultHalftime = 1
+	ResultEnd      = 2
+	ResultExtended = 3
+	ResultOvertime = 4
+	ResultEleven   = 5
 )
 
 type MatchResult struct {
-	ResultID			int		`json:"resultID"`
-	ResultName			string	`json:"resultName"`
-	PointsTeam1			int		`json:"pointsTeam1"`
-	PointsTeam2			int		`json:"pointsTeam2"`
-	ResultOrderID		int		`json:"resultOrderID"`
-	ResultTypeID		int		`json:"resultTypeID"`
-	ResultDescription	string	`json: "resultDescription"`
+	ResultID          int    `json:"resultID"`
+	ResultName        string `json:"resultName"`
+	PointsTeam1       int    `json:"pointsTeam1"`
+	PointsTeam2       int    `json:"pointsTeam2"`
+	ResultOrderID     int    `json:"resultOrderID"`
+	ResultTypeID      int    `json:"resultTypeID"`
+	ResultDescription string `json: "resultDescription"`
 }
 
 type Goal struct {
-	GoalID			int		`json:"goalID"`
-	ScoreTeam1		int		`json:"scoreTeam1"`
-	ScoreTeam2		int		`json:"scoreTeam2"`
-	MatchMinute		int		`json:"matchMinute"`
-	GoalGetterID	int		`json:"goalGetterID"`
-	GoalGetterName	string	`json:"goalGetterName"`
-	IsPenalty		bool	`json:"isPenalty"`
-	IsOwnGoal		bool	`json:"isOwnGoal"`
-	IsOvertime		bool	`json:"isOvertime"`
-	Comment			string	`json:"comment"`
+	GoalID         int    `json:"goalID"`
+	ScoreTeam1     int    `json:"scoreTeam1"`
+	ScoreTeam2     int    `json:"scoreTeam2"`
+	MatchMinute    int    `json:"matchMinute"`
+	GoalGetterID   int    `json:"goalGetterID"`
+	GoalGetterName string `json:"goalGetterName"`
+	IsPenalty      bool   `json:"isPenalty"`
+	IsOwnGoal      bool   `json:"isOwnGoal"`
+	IsOvertime     bool   `json:"isOvertime"`
+	Comment        string `json:"comment"`
 }
 
 type Match struct {
-	MatchID 			int 			`json:"matchID"`
-	MatchDateTime 		string 			`json:"matchDateTime"`
-	TimeZoneID 			string 			`json:"timeZoneID"`
-	LeagueID 			int 			`json:"leagueId"`
-	LeagueName 			string 			`json:"leagueName"`
-	LeagueSeason 		int 			`json:"leagueSeason"`
-	LeagueShortcut 		string 			`json:"leagueShortcut"`
-	MatchDateTimeUTC 	string 			`json:"matchDateTimeUTC"`
-	Group 				Group 			`json:"group"`
-	Team1 				Team 			`json:"team1"`
-	Team2 				Team 			`json:"team2"`
-	LastUpdateDatetime 	string 			`json:"lastUpdateDateTime"`
-	MatchIsFinished 	bool 			`json:"matchIsFinished"`
-	MatchResults		[]MatchResult	`json:"matchResults"`
-	Goals				[]Goal			`json:"goals"`
+	MatchID            int           `json:"matchID"`
+	MatchDateTime      string        `json:"matchDateTime"`
+	TimeZoneID         string        `json:"timeZoneID"`
+	LeagueID           int           `json:"leagueId"`
+	LeagueName         string        `json:"leagueName"`
+	LeagueSeason       int           `json:"leagueSeason"`
+	LeagueShortcut     string        `json:"leagueShortcut"`
+	MatchDateTimeUTC   string        `json:"matchDateTimeUTC"`
+	Group              Group         `json:"group"`
+	Team1              Team          `json:"team1"`
+	Team2              Team          `json:"team2"`
+	LastUpdateDatetime string        `json:"lastUpdateDateTime"`
+	MatchIsFinished    bool          `json:"matchIsFinished"`
+	MatchResults       []MatchResult `json:"matchResults"`
+	Goals              []Goal        `json:"goals"`
 
-	Location			interface{}		`json:"location"`
-	NumberOfViewers		interface{}		`json:"numberOfViewers"`
+	Location        interface{} `json:"location"`
+	NumberOfViewers interface{} `json:"numberOfViewers"`
 }
 
 const baseURL = "https://api.openligadb.de"
@@ -106,8 +106,8 @@ func sendGETRequest(endpoint string) ([]byte, error) {
 	return body, nil
 }
 
-func GetMatchByID(id int) (Match) {
-	body, err := sendGETRequest("/getmatchdata/"+strconv.Itoa(id))
+func GetMatchByID(id int) Match {
+	body, err := sendGETRequest("/getmatchdata/" + strconv.Itoa(id))
 
 	if err != nil {
 		log.Fatal(err)
@@ -116,12 +116,12 @@ func GetMatchByID(id int) (Match) {
 	var match Match
 
 	json.Unmarshal([]byte(body), &match)
-	
+
 	return match
 }
 
-func GetMatchesByLeague(league string) ([]Match) {
-	body, err := sendGETRequest("/getmatchdata/"+league)
+func GetMatchesByLeague(league string) []Match {
+	body, err := sendGETRequest("/getmatchdata/" + league)
 
 	if err != nil {
 		log.Fatal(err)
@@ -130,7 +130,7 @@ func GetMatchesByLeague(league string) ([]Match) {
 	var matches []Match
 
 	json.Unmarshal([]byte(body), &matches)
-	
+
 	return matches
 }
 

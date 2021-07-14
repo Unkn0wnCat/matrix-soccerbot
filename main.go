@@ -3,20 +3,20 @@ package main
 //go:generate gotext -srclang=en update -out=catalog.go -lang=en,de
 
 import (
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
+	"log"
 	"maunium.net/go/mautrix"
 	"maunium.net/go/mautrix/event"
 	"maunium.net/go/mautrix/id"
-	"log"    
-	"golang.org/x/text/language"
-    "golang.org/x/text/message"
 	"os"
 )
 
 type formattedMessage struct {
-	Type string	`json:"msgtype"`
-	Body string	`json:"body"`
-	Format string	`json:"format"`
-	FormattedBody string	`json:"formatted_body"`
+	Type          string `json:"msgtype"`
+	Body          string `json:"body"`
+	Format        string `json:"format"`
+	FormattedBody string `json:"formatted_body"`
 }
 
 func init() {
@@ -61,10 +61,10 @@ func main() {
 
 	if config.Bot.AccessKey == "" {
 		res, err := client.Login(&mautrix.ReqLogin{
-			Type:             "m.login.password",
-			Identifier:       mautrix.UserIdentifier{Type: mautrix.IdentifierTypeUser, User: config.Bot.Username},
-			Password:         config.Bot.Password,
-			StoreCredentials: true,
+			Type:                     "m.login.password",
+			Identifier:               mautrix.UserIdentifier{Type: mautrix.IdentifierTypeUser, User: config.Bot.Username},
+			Password:                 config.Bot.Password,
+			StoreCredentials:         true,
 			InitialDeviceDisplayName: "github.com/Unkn0wnCat/matrix-soccerbot",
 		})
 
@@ -82,7 +82,6 @@ func main() {
 	}
 
 	go client.Sync()
-
 
 	match := GetMatchByID(61933)
 

@@ -3,14 +3,14 @@ package main
 import (
 	"fmt"
 	"github.com/gomarkdown/markdown"
-	"log"
-	"time"
-	"strconv"
 	"golang.org/x/text/language"
-    "golang.org/x/text/message"
+	"golang.org/x/text/message"
+	"log"
+	"strconv"
+	"time"
 )
 
-func generateMessageForMatch(config Config, match Match) (string) {
+func generateMessageForMatch(config Config, match Match) string {
 	lang := language.MustParse(config.Language)
 
 	p := message.NewPrinter(lang)
@@ -27,7 +27,7 @@ func generateMessageForMatch(config Config, match Match) (string) {
 	latestGoal := Goal{0, 0, 0, 0, 0, "", false, false, false, ""}
 
 	if len(match.Goals) != 0 {
-		latestGoal = match.Goals[len(match.Goals) - 1]
+		latestGoal = match.Goals[len(match.Goals)-1]
 	}
 
 	/*isTeam1Winning := false
@@ -74,13 +74,13 @@ func generateMessageForMatch(config Config, match Match) (string) {
 		scoringTeam := p.Sprintf("unknown")
 
 		if prevScore1 < goal.ScoreTeam1 {
-			scoringTeam = "<font color=\""+team1Color+"\">"+match.Team1.TeamName+"</font>"
+			scoringTeam = "<font color=\"" + team1Color + "\">" + match.Team1.TeamName + "</font>"
 		}
 		if prevScore2 < goal.ScoreTeam2 {
-			scoringTeam = "<font color=\""+team2Color+"\">"+match.Team2.TeamName+"</font>"
+			scoringTeam = "<font color=\"" + team2Color + "\">" + match.Team2.TeamName + "</font>"
 		}
 
-		scoringTs := strconv.Itoa(goal.MatchMinute)+"m"
+		scoringTs := strconv.Itoa(goal.MatchMinute) + "m"
 
 		if goal.MatchMinute == 0 && lastTs > 0 {
 			scoringTs = "???"
@@ -103,7 +103,7 @@ func generateMessageForMatch(config Config, match Match) (string) {
 		}
 
 		if goal.Comment != "" {
-			bonusInfos += " \""+goal.Comment+"\""
+			bonusInfos += " \"" + goal.Comment + "\""
 		}
 
 		out += p.Sprintf("* %[1]s - <font color=\"%[2]s\">%[4]d</font>:<font color=\"%[3]s\">%[5]d</font> - Goal for %[6]s by %[7]s%[8]s\n", scoringTs, team1Color, team2Color, goal.ScoreTeam1, goal.ScoreTeam2, scoringTeam, goal.GoalGetterName, bonusInfos)
@@ -119,27 +119,27 @@ func generateMessageForMatch(config Config, match Match) (string) {
 
 		for _, result := range match.MatchResults {
 			switch result.ResultTypeID {
-				case ResultHalftime:
-					out += p.Sprintf("* **Halftime result")
-					break
-				case ResultEnd:
-					out += p.Sprintf("* **Result after 90 minutes")
-					break
-				case ResultExtended:
-					out += p.Sprintf("* **Result after extended Time")
-					break
-				case ResultOvertime:
-					out += p.Sprintf("* **Result after overtime")
-					break
-				case ResultEleven:
-					out += p.Sprintf("* **Result after penalty shots")
-					break
-				default:
-					out += p.Sprintf("* **Result")
-					break
+			case ResultHalftime:
+				out += p.Sprintf("* **Halftime result")
+				break
+			case ResultEnd:
+				out += p.Sprintf("* **Result after 90 minutes")
+				break
+			case ResultExtended:
+				out += p.Sprintf("* **Result after extended Time")
+				break
+			case ResultOvertime:
+				out += p.Sprintf("* **Result after overtime")
+				break
+			case ResultEleven:
+				out += p.Sprintf("* **Result after penalty shots")
+				break
+			default:
+				out += p.Sprintf("* **Result")
+				break
 			}
 
-			out += " <font color=\""+team1Color+"\">"+strconv.Itoa(result.PointsTeam1)+"</font>:<font color=\""+team2Color+"\">"+strconv.Itoa(result.PointsTeam2)+"</font>**\n\n"
+			out += " <font color=\"" + team1Color + "\">" + strconv.Itoa(result.PointsTeam1) + "</font>:<font color=\"" + team2Color + "\">" + strconv.Itoa(result.PointsTeam2) + "</font>**\n\n"
 		}
 
 		out += "---\n\n"
@@ -150,7 +150,7 @@ func generateMessageForMatch(config Config, match Match) (string) {
 	return out
 }
 
-func renderMarkdown(md string) (string) {
+func renderMarkdown(md string) string {
 	html := markdown.ToHTML([]byte(md), nil, nil)
 	return string(html)
 }

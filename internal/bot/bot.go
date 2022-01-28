@@ -86,9 +86,12 @@ func Run() {
 
 	go client.Sync()
 
-	match := openLigaDbClient.GetMatchByID(61933)
+	match, err := openLigaDbClient.GetMatchByID(61933)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	msg := messageCreator.GenerateMessageForMatch(viper.GetString("language"), match)
+	msg := messageCreator.GenerateMessageForMatch(viper.GetString("language"), *match)
 
 	html := messageCreator.RenderMarkdown(msg)
 

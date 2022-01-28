@@ -20,7 +20,6 @@ package openLigaDbClient
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -123,32 +122,38 @@ func sendGETRequest(endpoint string) ([]byte, error) {
 	return body, nil
 }
 
-func GetMatchByID(id int) Match {
+func GetMatchByID(id int) (*Match, error) {
 	body, err := sendGETRequest("/getmatchdata/" + strconv.Itoa(id))
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	var match Match
 
-	json.Unmarshal([]byte(body), &match)
+	err = json.Unmarshal([]byte(body), &match)
+	if err != nil {
+		return nil, err
+	}
 
-	return match
+	return &match, err
 }
 
-func GetMatchesByLeague(league string) []Match {
+func GetMatchesByLeague(league string) ([]Match, error) {
 	body, err := sendGETRequest("/getmatchdata/" + league)
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	var matches []Match
 
-	json.Unmarshal([]byte(body), &matches)
+	err = json.Unmarshal([]byte(body), &matches)
+	if err != nil {
+		return nil, err
+	}
 
-	return matches
+	return matches, nil
 }
 
 func ParseTime(timeStr string) (time.Time, error) {

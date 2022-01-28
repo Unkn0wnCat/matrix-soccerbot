@@ -2,9 +2,39 @@
     "language": "de",
     "messages": [
         {
+            "id": "matrix-soccerbot is missing user identification (homeserver / username)",
+            "message": "matrix-soccerbot is missing user identification (homeserver / username)",
+            "translation": "matrix-soccerbot fehlt die Benutzeridentifikation (homeserver / username)"
+        },
+        {
+            "id": "matrix-soccerbot is missing user credentials (access-key / password)",
+            "message": "matrix-soccerbot is missing user credentials (access-key / password)",
+            "translation": "matrix-soccerbot fehlen die Zugangsdaten (access-key / password)"
+        },
+        {
+            "id": "Please provide either an access-key or password",
+            "message": "Please provide either an access-key or password",
+            "translation": "Bitte gib entweder einen access-key oder ein Passwort an"
+        },
+        {
             "id": "matrix-soccerbot has started.",
-            "message": "matrix-soccerbot ist gestartet.",
-            "translation": ""
+            "message": "matrix-soccerbot has started.",
+            "translation": "matrix-soccerbot wurde gestartet."
+        },
+        {
+            "id": "matrix-soccerbot couldn't initialize matrix client, please check credentials",
+            "message": "matrix-soccerbot couldn't initialize matrix client, please check credentials",
+            "translation": "matrix-soccerbot konnte den Matrix-Client nicht initialisieren, bitte Zugangsdaten überprüfen"
+        },
+        {
+            "id": "matrix-soccerbot couldn't sign in, please check credentials",
+            "message": "matrix-soccerbot couldn't sign in, please check credentials",
+            "translation": "matrix-soccerbot konnte sich nicht einloggen, bitte Zugangsdaten überprüfen"
+        },
+        {
+            "id": "matrix-soccerbot could not save the accessKey to config",
+            "message": "matrix-soccerbot could not save the accessKey to config",
+            "translation": "matrix-soccerbot konnte den accessKey nicht in der Konfiguration speichern"
         },
         {
             "id": "# Game \u003cfont color=\"{Team1Color}\"\u003e{TeamName}\u003c/font\u003e vs. \u003cfont color=\"{Team2Color}\"\u003e{TeamName_1}\u003c/font\u003e ***(\u003cfont color=\"{Team1Color}\"\u003e{ScoreTeam1}\u003c/font\u003e:\u003cfont color=\"{Team2Color}\"\u003e{ScoreTeam2}\u003c/font\u003e)***",

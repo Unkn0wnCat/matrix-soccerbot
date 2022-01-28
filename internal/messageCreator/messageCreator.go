@@ -1,7 +1,25 @@
-package main
+/*
+ * Copyright © 2022 Kevin Kandlbinder.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package messageCreator
 
 import (
 	"fmt"
+	"github.com/Unkn0wnCat/matrix-soccerbot/internal/openLigaDbClient"
 	"github.com/gomarkdown/markdown"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -10,21 +28,21 @@ import (
 	"time"
 )
 
-func generateMessageForMatch(config Config, match Match) string {
-	lang := language.MustParse(config.Language)
+func GenerateMessageForMatch(targetLang string, match openLigaDbClient.Match) string {
+	lang := language.MustParse(targetLang)
 
 	p := message.NewPrinter(lang)
 
 	out := ""
 
-	matchTime, err := ParseTime(match.MatchDateTimeUTC)
+	matchTime, err := openLigaDbClient.ParseTime(match.MatchDateTimeUTC)
 
 	if err != nil {
 		log.Fatal(err)
 		return ""
 	}
 
-	latestGoal := Goal{0, 0, 0, 0, 0, "", false, false, false, ""}
+	latestGoal := openLigaDbClient.Goal{}
 
 	if len(match.Goals) != 0 {
 		latestGoal = match.Goals[len(match.Goals)-1]
@@ -119,19 +137,19 @@ func generateMessageForMatch(config Config, match Match) string {
 
 		for _, result := range match.MatchResults {
 			switch result.ResultTypeID {
-			case ResultHalftime:
+			case openLigaDbClient.ResultHalftime:
 				out += p.Sprintf("* **Halftime result")
 				break
-			case ResultEnd:
+			case openLigaDbClient.ResultEnd:
 				out += p.Sprintf("* **Result after 90 minutes")
 				break
-			case ResultExtended:
+			case openLigaDbClient.ResultExtended:
 				out += p.Sprintf("* **Result after extended Time")
 				break
-			case ResultOvertime:
+			case openLigaDbClient.ResultOvertime:
 				out += p.Sprintf("* **Result after overtime")
 				break
-			case ResultEleven:
+			case openLigaDbClient.ResultEleven:
 				out += p.Sprintf("* **Result after penalty shots")
 				break
 			default:
@@ -150,7 +168,7 @@ func generateMessageForMatch(config Config, match Match) string {
 	return out
 }
 
-func renderMarkdown(md string) string {
+func RenderMarkdown(md string) string {
 	html := markdown.ToHTML([]byte(md), nil, nil)
 	return string(html)
 }

@@ -2,9 +2,51 @@
     "language": "en",
     "messages": [
         {
+            "id": "matrix-soccerbot is missing user identification (homeserver / username)",
+            "message": "matrix-soccerbot is missing user identification (homeserver / username)",
+            "translation": "matrix-soccerbot is missing user identification (homeserver / username)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "matrix-soccerbot is missing user credentials (access-key / password)",
+            "message": "matrix-soccerbot is missing user credentials (access-key / password)",
+            "translation": "matrix-soccerbot is missing user credentials (access-key / password)",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Please provide either an access-key or password",
+            "message": "Please provide either an access-key or password",
+            "translation": "Please provide either an access-key or password",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "matrix-soccerbot has started.",
             "message": "matrix-soccerbot has started.",
             "translation": "matrix-soccerbot has started.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "matrix-soccerbot couldn't initialize matrix client, please check credentials",
+            "message": "matrix-soccerbot couldn't initialize matrix client, please check credentials",
+            "translation": "matrix-soccerbot couldn't initialize matrix client, please check credentials",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "matrix-soccerbot couldn't sign in, please check credentials",
+            "message": "matrix-soccerbot couldn't sign in, please check credentials",
+            "translation": "matrix-soccerbot couldn't sign in, please check credentials",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "matrix-soccerbot could not save the accessKey to config",
+            "message": "matrix-soccerbot could not save the accessKey to config",
+            "translation": "matrix-soccerbot could not save the accessKey to config",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

@@ -14,10 +14,27 @@
  * limitations under the License.
  *
  */
-package main
 
-import "github.com/Unkn0wnCat/matrix-soccerbot/cmd"
+package cmd
 
-func main() {
-	cmd.Execute()
+import (
+	"github.com/Unkn0wnCat/matrix-soccerbot/internal/bot"
+
+	"github.com/spf13/cobra"
+)
+
+// runCmd represents the run command
+var runCmd = &cobra.Command{
+	Use:   "run",
+	Short: "Runs the bot",
+	Long: `This runs the bot with parameters from the config file.
+
+The bot will log in to the homeserver and start posting updates to subscribed channels.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		bot.Run()
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(runCmd)
 }

@@ -14,10 +14,10 @@
  * limitations under the License.
  *
  */
-package main
 
-import "github.com/Unkn0wnCat/matrix-soccerbot/cmd"
+package config
 
-func main() {
-	cmd.Execute()
+type RoomConfig struct {
+	RoomID            string   `yaml:"id"`
+	SubscribedLeagues []string `yaml:"leagues"`
 }

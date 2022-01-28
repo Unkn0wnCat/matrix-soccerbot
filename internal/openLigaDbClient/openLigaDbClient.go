@@ -1,4 +1,21 @@
-package main
+/*
+ * Copyright © 2022 Kevin Kandlbinder.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+package openLigaDbClient
 
 import (
 	"encoding/json"
@@ -20,7 +37,7 @@ type Team struct {
 	TeamName      string `json:"teamName"`
 	ShortName     string `json:"shortName"`
 	TeamIconURL   string `json:"teamIconUrl"`
-	teamGroupName string `json:"teamGroupName"`
+	TeamGroupName string `json:"teamGroupName"`
 }
 
 const (
@@ -38,7 +55,7 @@ type MatchResult struct {
 	PointsTeam2       int    `json:"pointsTeam2"`
 	ResultOrderID     int    `json:"resultOrderID"`
 	ResultTypeID      int    `json:"resultTypeID"`
-	ResultDescription string `json: "resultDescription"`
+	ResultDescription string `json:"resultDescription"`
 }
 
 type Goal struct {
@@ -134,7 +151,7 @@ func GetMatchesByLeague(league string) []Match {
 	return matches
 }
 
-func ParseTime(timestr string) (time.Time, error) {
-	time, err := time.Parse(time.RFC3339, timestr)
-	return time, err
+func ParseTime(timeStr string) (time.Time, error) {
+	myTime, err := time.Parse(time.RFC3339, timeStr)
+	return myTime, err
 }

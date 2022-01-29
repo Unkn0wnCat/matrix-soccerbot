@@ -57,7 +57,7 @@ func init() {
 	viper.SetDefault("bot.password", "")
 	viper.SetDefault("bot.accessKey", "")
 	viper.SetDefault("bot.roomID", "")
-	viper.SetDefault("bot.rooms", []config.RoomConfig{})
+	viper.SetDefault("bot.rooms", config.RoomConfigTree{})
 
 	rootCmd.PersistentFlags().String("language", "en", "Default language to use for logging")
 	_ = viper.BindPFlag("language", rootCmd.PersistentFlags().Lookup("language"))

@@ -17,7 +17,9 @@
 
 package config
 
+type RoomConfigTree map[string]RoomConfig
+
 type RoomConfig struct {
-	RoomID            string   `yaml:"id"`
 	SubscribedLeagues []string `yaml:"leagues"`
+	Active            bool     `yaml:"active"`
 }

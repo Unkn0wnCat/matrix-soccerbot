@@ -18,8 +18,7 @@
 package bot
 
 import (
-	"github.com/Unkn0wnCat/matrix-soccerbot/internal/messageCreator"
-	"github.com/Unkn0wnCat/matrix-soccerbot/internal/openLigaDbClient"
+	"github.com/Unkn0wnCat/matrix-soccerbot/internal/config"
 	"github.com/spf13/viper"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -28,9 +27,13 @@ import (
 	"maunium.net/go/mautrix/event"
 	"maunium.net/go/mautrix/id"
 	"os"
+	"strings"
+	"time"
 )
 
 func Run() {
+	startTs := time.Now().Unix()
+
 	lang := language.MustParse(viper.GetString("language"))
 
 	p := message.NewPrinter(lang)
@@ -84,9 +87,35 @@ func Run() {
 		}
 	}
 
-	go client.Sync()
+	// 1643480884
+	// 1642823007671
 
-	match, err := openLigaDbClient.GetMatchByID(61933)
+	syncer := client.Syncer.(*mautrix.DefaultSyncer)
+	syncer.OnEventType(event.EventMessage, handleMessageEvent(client, startTs))
+
+	syncer.OnEventType(event.StateMember, handleMemberEvent(client, startTs))
+
+	go func() {
+		err := client.Sync()
+		if err != nil {
+			log.Println(p.Sprintf("matrix-soccerbot has encountered a fatal error whilst syncing"))
+			log.Println(err)
+			os.Exit(2)
+		}
+		log.Println("sync exited.")
+	}()
+
+	go func() {
+		resp, err := client.JoinedRooms()
+		if err != nil {
+			log.Println(p.Sprintf("matrix-soccerbot could not read joined rooms, something is horribly wrong"))
+			log.Fatalln(err)
+		}
+
+		config.RoomConfigInitialUpdate(resp.JoinedRooms)
+	}()
+
+	/*match, err := openLigaDbClient.GetMatchByID(61933)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -105,6 +134,72 @@ func Run() {
 
 	if err != nil {
 		log.Fatal(err)
+	}*/
+
+	time.Sleep(1000 * 24 * time.Hour)
+}
+
+func handleMessageEvent(client *mautrix.Client, startTs int64) mautrix.EventHandler {
+	return func(source mautrix.EventSource, evt *event.Event) {
+		if evt.Timestamp < (startTs * 1000) {
+			// Ignore old events
+			return
+		}
+
+		content, ok := evt.Content.Parsed.(*event.MessageEventContent)
+
+		if !ok {
+			log.Println("Uh oh, could not typecast m.room.member event content...")
+			return
+		}
+
+		username, _, err := client.UserID.Parse()
+		if err != nil {
+			log.Panicln("Invalid user id in client")
+		}
+
+		if !strings.HasPrefix(content.Body, "!"+username) &&
+			!strings.HasPrefix(content.Body, "@"+username) &&
+			!(strings.HasPrefix(content.Body, username) && strings.HasPrefix(content.FormattedBody, "<a href=\"https://matrix.to/#/"+client.UserID.String()+"\">")) {
+			return
+		}
+
+		log.Println(content.Body)
+
+	}
+}
+
+func handleMemberEvent(client *mautrix.Client, startTs int64) func(source mautrix.EventSource, evt *event.Event) {
+	return func(source mautrix.EventSource, evt *event.Event) {
+		if *evt.StateKey != client.UserID.String() {
+			return
+		} // This does not concern us
+		if evt.Timestamp < (startTs * 1000) {
+			// Ignore old events, TODO: Handle missed invites.
+			return
+		}
+
+		content, ok := evt.Content.Parsed.(*event.MemberEventContent)
+
+		if !ok {
+			log.Println("Uh oh, could not typecast m.room.member event content...")
+			return
+		}
+
+		if content.Membership == event.MembershipInvite {
+			doAcceptInvite(client, evt.RoomID)
+			return
+		}
+
+		if content.Membership == event.MembershipJoin {
+			config.SetRoomConfigActive(evt.RoomID.String(), true)
+			return
+		}
+
+		if content.Membership.IsLeaveOrBan() {
+			config.SetRoomConfigActive(evt.RoomID.String(), false)
+			return
+		}
 	}
 }
 

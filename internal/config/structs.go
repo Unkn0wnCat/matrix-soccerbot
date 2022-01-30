@@ -22,4 +22,5 @@ type RoomConfigTree map[string]RoomConfig
 type RoomConfig struct {
 	SubscribedLeagues []string `yaml:"leagues"`
 	Active            bool     `yaml:"active"`
+	Language          string   `yaml:"lang"`
 }

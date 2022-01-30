@@ -177,7 +177,7 @@ func handleMessageEvent(client *mautrix.Client, startTs int64) mautrix.EventHand
 			return
 		}
 
-		log.Println(content.Body)
+		handleCommand(content.Body, evt.Sender, evt.RoomID, client)
 
 	}
 }

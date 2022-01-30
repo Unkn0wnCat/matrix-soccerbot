@@ -18,7 +18,6 @@
 package messageCreator
 
 import (
-	"fmt"
 	"github.com/Unkn0wnCat/matrix-soccerbot/internal/openLigaDbClient"
 	"github.com/gomarkdown/markdown"
 	"golang.org/x/text/language"
@@ -164,7 +163,6 @@ func GenerateMessageForMatch(targetLang string, match openLigaDbClient.Match) st
 		out += p.Sprintf("Data provided by [OpenLigaDB.de](https://www.openligadb.de) | [Sourcecode](https://github.com/Unkn0wnCat/matrix-soccerbot)")
 	}
 
-	fmt.Println(out)
 	return out
 }
 

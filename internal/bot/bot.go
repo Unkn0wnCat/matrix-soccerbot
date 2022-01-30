@@ -19,6 +19,8 @@ package bot
 
 import (
 	"github.com/Unkn0wnCat/matrix-soccerbot/internal/config"
+	"github.com/Unkn0wnCat/matrix-soccerbot/internal/messageCreator"
+	"github.com/Unkn0wnCat/matrix-soccerbot/internal/openLigaDbClient"
 	"github.com/spf13/viper"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -27,16 +29,19 @@ import (
 	"maunium.net/go/mautrix/event"
 	"maunium.net/go/mautrix/id"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
 	"time"
 )
 
 func Run() {
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+
 	startTs := time.Now().Unix()
 
-	lang := language.MustParse(viper.GetString("language"))
-
-	p := message.NewPrinter(lang)
+	p := message.NewPrinter(language.MustParse(viper.GetString("language")))
 
 	if viper.GetString("bot.homeserver") == "" || viper.GetString("bot.username") == "" {
 		log.Println(p.Sprintf("matrix-soccerbot is missing user identification (homeserver / username)"))
@@ -115,14 +120,15 @@ func Run() {
 		config.RoomConfigInitialUpdate(resp.JoinedRooms)
 	}()
 
-	/*match, err := openLigaDbClient.GetMatchByID(61933)
+	match, err := openLigaDbClient.GetMatchByID(61933)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	msg := messageCreator.GenerateMessageForMatch(viper.GetString("language"), *match)
+	/*msg*/
+	_ = messageCreator.GenerateMessageForMatch(viper.GetString("language"), *match)
 
-	html := messageCreator.RenderMarkdown(msg)
+	/*html := messageCreator.RenderMarkdown(msg)
 
 	log.Println(html)
 
@@ -136,7 +142,14 @@ func Run() {
 		log.Fatal(err)
 	}*/
 
-	time.Sleep(1000 * 24 * time.Hour)
+	<-c
+	log.Println(p.Sprintf("Shutting down..."))
+
+	client.StopSync()
+
+	log.Println(p.Sprintf("Goodbye!"))
+
+	os.Exit(0)
 }
 
 func handleMessageEvent(client *mautrix.Client, startTs int64) mautrix.EventHandler {

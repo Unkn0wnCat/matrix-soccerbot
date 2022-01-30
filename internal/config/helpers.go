@@ -20,6 +20,8 @@ package config
 import (
 	"encoding/base32"
 	"github.com/spf13/viper"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 	"log"
 	"maunium.net/go/mautrix/id"
 	"strings"
@@ -31,11 +33,12 @@ var (
 )
 
 func getRoomConfigs() RoomConfigTree {
+	p := message.NewPrinter(language.MustParse(viper.GetString("language")))
 	var roomConfigs RoomConfigTree
 
 	err := viper.UnmarshalKey("bot.rooms", &roomConfigs)
 	if err != nil {
-		log.Panicln("Corrupted configuration: Could not load room configurations!", err)
+		log.Panicln(p.Sprintf("Corrupted configuration: Could not load room configurations!\n%v", err))
 	}
 
 	return roomConfigs
@@ -46,6 +49,7 @@ func idStringToKey(id string) string {
 }
 
 func SetRoomConfigActive(id string, active bool) {
+	p := message.NewPrinter(language.MustParse(viper.GetString("language")))
 	roomConfigWg.Wait()
 	roomConfigWg.Add(1)
 
@@ -65,7 +69,7 @@ func SetRoomConfigActive(id string, active bool) {
 
 	err := viper.WriteConfig()
 	if err != nil {
-		log.Panicln("Configuration error: Could not save configuration!")
+		log.Panicln(p.Sprintf("Configuration error: Could not save configuration!"))
 	}
 	roomConfigWg.Done()
 }
@@ -83,6 +87,7 @@ func GetRoomConfig(id string) RoomConfig {
 }
 
 func RoomConfigInitialUpdate(ids []id.RoomID) {
+	p := message.NewPrinter(language.MustParse(viper.GetString("language")))
 	roomConfigWg.Wait()
 	roomConfigWg.Add(1)
 
@@ -108,12 +113,13 @@ func RoomConfigInitialUpdate(ids []id.RoomID) {
 
 	err := viper.WriteConfig()
 	if err != nil {
-		log.Panicln("Configuration error: Could not save configuration!")
+		log.Panicln(p.Sprintf("Configuration error: Could not save configuration!"))
 	}
 	roomConfigWg.Done()
 }
 
 func AddRoomConfig(id string) {
+	p := message.NewPrinter(language.MustParse(viper.GetString("language")))
 	roomConfigWg.Wait()
 	roomConfigWg.Add(1)
 
@@ -130,7 +136,7 @@ func AddRoomConfig(id string) {
 
 	err := viper.WriteConfig()
 	if err != nil {
-		log.Panicln("Configuration error: Could not save configuration!")
+		log.Panicln(p.Sprintf("Configuration error: Could not save configuration!"))
 	}
 	roomConfigWg.Done()
 }

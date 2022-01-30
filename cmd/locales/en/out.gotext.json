@@ -2,6 +2,57 @@
     "language": "en",
     "messages": [
         {
+            "id": "Could not accept invite to {RoomID} due to internal error",
+            "message": "Could not accept invite to {RoomID} due to internal error",
+            "translation": "Could not accept invite to {RoomID} due to internal error",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "RoomID",
+                    "string": "%[1]s",
+                    "type": "maunium.net/go/mautrix/id.RoomID",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "id"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": "Could not accept invite to {RoomID} due to join error",
+            "message": "Could not accept invite to {RoomID} due to join error",
+            "translation": "Could not accept invite to {RoomID} due to join error",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "RoomID",
+                    "string": "%[1]s",
+                    "type": "maunium.net/go/mautrix/id.RoomID",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "id"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": "Successfully joined room {RoomID}",
+            "message": "Successfully joined room {RoomID}",
+            "translation": "Successfully joined room {RoomID}",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "RoomID",
+                    "string": "%[1]s",
+                    "type": "maunium.net/go/mautrix/id.RoomID",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "id"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
             "id": "matrix-soccerbot is missing user identification (homeserver / username)",
             "message": "matrix-soccerbot is missing user identification (homeserver / username)",
             "translation": "matrix-soccerbot is missing user identification (homeserver / username)",
@@ -47,6 +98,58 @@
             "id": "matrix-soccerbot could not save the accessKey to config",
             "message": "matrix-soccerbot could not save the accessKey to config",
             "translation": "matrix-soccerbot could not save the accessKey to config",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "matrix-soccerbot has encountered a fatal error whilst syncing",
+            "message": "matrix-soccerbot has encountered a fatal error whilst syncing",
+            "translation": "matrix-soccerbot has encountered a fatal error whilst syncing",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "matrix-soccerbot could not read joined rooms, something is horribly wrong",
+            "message": "matrix-soccerbot could not read joined rooms, something is horribly wrong",
+            "translation": "matrix-soccerbot could not read joined rooms, something is horribly wrong",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Shutting down...",
+            "message": "Shutting down...",
+            "translation": "Shutting down...",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Goodbye!",
+            "message": "Goodbye!",
+            "translation": "Goodbye!",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Corrupted configuration: Could not load room configurations!\n{Err}",
+            "message": "Corrupted configuration: Could not load room configurations!\n{Err}",
+            "translation": "Corrupted configuration: Could not load room configurations!\n{Err}",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "Err",
+                    "string": "%[1]v",
+                    "type": "error",
+                    "underlyingType": "interface{Error() string}",
+                    "argNum": 1,
+                    "expr": "err"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": "Configuration error: Could not save configuration!",
+            "message": "Configuration error: Could not save configuration!",
+            "translation": "Configuration error: Could not save configuration!",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },

@@ -2,6 +2,51 @@
     "language": "de",
     "messages": [
         {
+            "id": "Could not accept invite to {RoomID} due to internal error",
+            "message": "Could not accept invite to {RoomID} due to internal error",
+            "translation": "Konnte Einladung zu {RoomID} wegen eines internen Fehlers nicht annehmen",
+            "placeholders": [
+                {
+                    "id": "RoomID",
+                    "string": "%[1]s",
+                    "type": "maunium.net/go/mautrix/id.RoomID",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "id"
+                }
+            ]
+        },
+        {
+            "id": "Could not accept invite to {RoomID} due to join error",
+            "message": "Could not accept invite to {RoomID} due to join error",
+            "translation": "Konnte Einladung zu {RoomID} wegen eines Beitrittsfehlers nicht annehmen",
+            "placeholders": [
+                {
+                    "id": "RoomID",
+                    "string": "%[1]s",
+                    "type": "maunium.net/go/mautrix/id.RoomID",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "id"
+                }
+            ]
+        },
+        {
+            "id": "Successfully joined room {RoomID}",
+            "message": "Successfully joined room {RoomID}",
+            "translation": "Raum {RoomID} erfolgreich betreten",
+            "placeholders": [
+                {
+                    "id": "RoomID",
+                    "string": "%[1]s",
+                    "type": "maunium.net/go/mautrix/id.RoomID",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "id"
+                }
+            ]
+        },
+        {
             "id": "matrix-soccerbot is missing user identification (homeserver / username)",
             "message": "matrix-soccerbot is missing user identification (homeserver / username)",
             "translation": "matrix-soccerbot fehlt die Benutzeridentifikation (homeserver / username)"
@@ -35,6 +80,46 @@
             "id": "matrix-soccerbot could not save the accessKey to config",
             "message": "matrix-soccerbot could not save the accessKey to config",
             "translation": "matrix-soccerbot konnte den accessKey nicht in der Konfiguration speichern"
+        },
+        {
+            "id": "matrix-soccerbot has encountered a fatal error whilst syncing",
+            "message": "matrix-soccerbot has encountered a fatal error whilst syncing",
+            "translation": "matrix-soccerbot hat einen fatalen Fehler beim Synchronisieren erfahren"
+        },
+        {
+            "id": "matrix-soccerbot could not read joined rooms, something is horribly wrong",
+            "message": "matrix-soccerbot could not read joined rooms, something is horribly wrong",
+            "translation": "matrix-soccerbot konnte nicht die beigetretenen Räume abrufen, irgendwas geht grauenvoll schief"
+        },
+        {
+            "id": "Shutting down...",
+            "message": "Shutting down...",
+            "translation": "Fahre herrunter..."
+        },
+        {
+            "id": "Goodbye!",
+            "message": "Goodbye!",
+            "translation": "Auf Wiedersehen!"
+        },
+        {
+            "id": "Corrupted configuration: Could not load room configurations!\n{Err}",
+            "message": "Corrupted configuration: Could not load room configurations!\n{Err}",
+            "translation": "Korrumpierte Konfiguration: Konnte Raumkonfiguration nicht laden!\n{Err}",
+            "placeholders": [
+                {
+                    "id": "Err",
+                    "string": "%[1]v",
+                    "type": "error",
+                    "underlyingType": "interface{Error() string}",
+                    "argNum": 1,
+                    "expr": "err"
+                }
+            ]
+        },
+        {
+            "id": "Configuration error: Could not save configuration!",
+            "message": "Configuration error: Could not save configuration!",
+            "translation": "Konfigurationsfehler: Konnte Konfiguration nicht speichern!"
         },
         {
             "id": "# Game \u003cfont color=\"{Team1Color}\"\u003e{TeamName}\u003c/font\u003e vs. \u003cfont color=\"{Team2Color}\"\u003e{TeamName_1}\u003c/font\u003e ***(\u003cfont color=\"{Team1Color}\"\u003e{ScoreTeam1}\u003c/font\u003e:\u003cfont color=\"{Team2Color}\"\u003e{ScoreTeam2}\u003c/font\u003e)***",

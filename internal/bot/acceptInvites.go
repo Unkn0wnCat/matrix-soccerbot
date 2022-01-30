@@ -19,6 +19,9 @@ package bot
 
 import (
 	"github.com/Unkn0wnCat/matrix-soccerbot/internal/config"
+	"github.com/spf13/viper"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 	"log"
 	"maunium.net/go/mautrix"
 	"maunium.net/go/mautrix/id"
@@ -40,9 +43,11 @@ func isInRoom(client *mautrix.Client, id id.RoomID) (bool, error) {
 }
 
 func doAcceptInvite(client *mautrix.Client, id id.RoomID) {
+	p := message.NewPrinter(language.MustParse(viper.GetString("language")))
+
 	roomAlreadyJoined, err := isInRoom(client, id)
 	if err != nil {
-		log.Println("Could not accept invite to", id)
+		log.Println(p.Sprintf("Could not accept invite to %s due to internal error", id))
 		log.Println(err)
 		return
 	}
@@ -53,12 +58,12 @@ func doAcceptInvite(client *mautrix.Client, id id.RoomID) {
 
 	_, err = client.JoinRoom(id.String(), "", nil)
 	if err != nil {
-		log.Println("Could not accept invite to", id)
+		log.Println(p.Sprintf("Could not accept invite to %s due to join error", id))
 		log.Println(err)
 		return
 	}
 
-	log.Println("Successfully joined room", id)
+	log.Println(p.Sprintf("Successfully joined room %s", id))
 
 	config.AddRoomConfig(id.String())
 }

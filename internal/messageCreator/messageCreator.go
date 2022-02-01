@@ -18,7 +18,7 @@
 package messageCreator
 
 import (
-	"github.com/Unkn0wnCat/matrix-soccerbot/internal/openLigaDbClient"
+	"github.com/Unkn0wnCat/matrix-soccerbot/openLigaDbClient"
 	"github.com/gomarkdown/markdown"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -27,6 +27,7 @@ import (
 	"time"
 )
 
+// GenerateMessageForMatch takes a openLigaDbClient.Match and a target language and returns a markdown message
 func GenerateMessageForMatch(targetLang string, match openLigaDbClient.Match) string {
 	lang := language.MustParse(targetLang)
 
@@ -166,6 +167,7 @@ func GenerateMessageForMatch(targetLang string, match openLigaDbClient.Match) st
 	return out
 }
 
+// RenderMarkdown converts markdown to HTML
 func RenderMarkdown(md string) string {
 	html := markdown.ToHTML([]byte(md), nil, nil)
 	return string(html)

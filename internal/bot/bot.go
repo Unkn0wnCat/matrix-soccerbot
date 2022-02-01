@@ -20,7 +20,7 @@ package bot
 import (
 	"github.com/Unkn0wnCat/matrix-soccerbot/internal/config"
 	"github.com/Unkn0wnCat/matrix-soccerbot/internal/messageCreator"
-	"github.com/Unkn0wnCat/matrix-soccerbot/internal/openLigaDbClient"
+	"github.com/Unkn0wnCat/matrix-soccerbot/openLigaDbClient"
 	"github.com/spf13/viper"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
@@ -35,91 +35,48 @@ import (
 	"time"
 )
 
+// Run starts the bot, blocking until an interrupt or SIGTERM is received
 func Run() {
+	// Set up signal channel for controlled shutdown
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
+	// Save Timestamp for filtering
 	startTs := time.Now().Unix()
 
+	// Set up l10n
 	p := message.NewPrinter(language.MustParse(viper.GetString("language")))
 
-	if viper.GetString("bot.homeserver") == "" || viper.GetString("bot.username") == "" {
-		log.Println(p.Sprintf("matrix-soccerbot is missing user identification (homeserver / username)"))
-		os.Exit(1)
-		return
-	}
-
-	if viper.GetString("bot.accessKey") == "" && viper.GetString("bot.password") == "" {
-		log.Println(p.Sprintf("matrix-soccerbot is missing user credentials (access-key / password)"))
-		log.Println(p.Sprintf("Please provide either an access-key or password"))
-		os.Exit(1)
-		return
-	}
+	checkConfig(p)
 
 	log.Println(p.Sprintf("matrix-soccerbot has started."))
 
-	client, err := mautrix.NewClient(viper.GetString("bot.homeserver"), id.NewUserID(viper.GetString("bot.username"), viper.GetString("bot.homeserver")), viper.GetString("bot.accessKey"))
-
+	// Initialize client, this does not check access key!
+	matrixClient, err := mautrix.NewClient(
+		viper.GetString("bot.homeserver"),
+		id.NewUserID(viper.GetString("bot.username"), viper.GetString("bot.homeserver")),
+		viper.GetString("bot.accessKey"))
 	if err != nil {
 		log.Println(p.Sprintf("matrix-soccerbot couldn't initialize matrix client, please check credentials"))
 		log.Fatal(err)
 		return
 	}
 
+	// If no accessKey is set, perform login
 	if viper.GetString("bot.accessKey") == "" {
-		res, err := client.Login(&mautrix.ReqLogin{
-			Type:                     "m.login.password",
-			Identifier:               mautrix.UserIdentifier{Type: mautrix.IdentifierTypeUser, User: viper.GetString("bot.username")},
-			Password:                 viper.GetString("bot.password"),
-			StoreCredentials:         true,
-			InitialDeviceDisplayName: "github.com/Unkn0wnCat/matrix-soccerbot",
-		})
-
-		if err != nil {
-			log.Println(p.Sprintf("matrix-soccerbot couldn't sign in, please check credentials"))
-			log.Fatal(err)
-			return
-		}
-
-		accessToken := res.AccessToken
-
-		viper.Set("bot.accessKey", accessToken)
-		err = viper.WriteConfig()
-		if err != nil {
-			log.Println(p.Sprintf("matrix-soccerbot could not save the accessKey to config"))
-			log.Fatal(err)
-			return
-		}
+		performLogin(matrixClient, p)
 	}
 
-	// 1643480884
-	// 1642823007671
+	// Set up sync handlers for invites and messages
+	syncer := matrixClient.Syncer.(*mautrix.DefaultSyncer)
+	syncer.OnEventType(event.EventMessage, handleMessageEvent(matrixClient, startTs))
+	syncer.OnEventType(event.StateMember, handleMemberEvent(matrixClient, startTs))
 
-	syncer := client.Syncer.(*mautrix.DefaultSyncer)
-	syncer.OnEventType(event.EventMessage, handleMessageEvent(client, startTs))
+	// Set up async tasks
+	go startSync(matrixClient, p)
+	go doInitialUpdate(matrixClient, p)
 
-	syncer.OnEventType(event.StateMember, handleMemberEvent(client, startTs))
-
-	go func() {
-		err := client.Sync()
-		if err != nil {
-			log.Println(p.Sprintf("matrix-soccerbot has encountered a fatal error whilst syncing"))
-			log.Println(err)
-			os.Exit(2)
-		}
-		log.Println("sync exited.")
-	}()
-
-	go func() {
-		resp, err := client.JoinedRooms()
-		if err != nil {
-			log.Println(p.Sprintf("matrix-soccerbot could not read joined rooms, something is horribly wrong"))
-			log.Fatalln(err)
-		}
-
-		config.RoomConfigInitialUpdate(resp.JoinedRooms)
-	}()
-
+	// The following is here for reference
 	match, err := openLigaDbClient.GetMatchByID(61933)
 	if err != nil {
 		log.Fatal(err)
@@ -132,7 +89,7 @@ func Run() {
 
 	log.Println(html)
 
-	_, err = client.SendMessageEvent(id.RoomID(viper.GetString("bot.roomId")), event.EventMessage, formattedMessage{
+	_, err = matrixClient.SendMessageEvent(id.RoomID(viper.GetString("bot.roomId")), event.EventMessage, formattedMessage{
 		"m.notice",
 		msg,
 		"org.matrix.custom.html",
@@ -145,20 +102,79 @@ func Run() {
 	<-c
 	log.Println(p.Sprintf("Shutting down..."))
 
-	client.StopSync()
+	matrixClient.StopSync()
 
 	log.Println(p.Sprintf("Goodbye!"))
 
 	os.Exit(0)
 }
 
-func handleMessageEvent(client *mautrix.Client, startTs int64) mautrix.EventHandler {
+// checkConfig applies constraints to the configuration and exits the program on violation
+func checkConfig(p *message.Printer) {
+	// Both homeserver and username are required!
+	if viper.GetString("bot.homeserver") == "" || viper.GetString("bot.username") == "" {
+		log.Println(p.Sprintf("matrix-soccerbot is missing user identification (homeserver / username)"))
+		os.Exit(1)
+		return
+	}
+
+	// Either accessKey or password are required
+	if viper.GetString("bot.accessKey") == "" && viper.GetString("bot.password") == "" {
+		log.Println(p.Sprintf("matrix-soccerbot is missing user credentials (access-key / password)"))
+		log.Println(p.Sprintf("Please provide either an access-key or password"))
+		os.Exit(1)
+		return
+	}
+}
+
+// performLogin logs in the mautrix.Client using the username and password from config
+func performLogin(matrixClient *mautrix.Client, p *message.Printer) {
+	res, err := matrixClient.Login(&mautrix.ReqLogin{
+		Type:                     "m.login.password",
+		Identifier:               mautrix.UserIdentifier{Type: mautrix.IdentifierTypeUser, User: viper.GetString("bot.username")},
+		Password:                 viper.GetString("bot.password"),
+		StoreCredentials:         true,
+		InitialDeviceDisplayName: "github.com/Unkn0wnCat/matrix-soccerbot",
+	})
+	if err != nil {
+		log.Println(p.Sprintf("matrix-soccerbot couldn't sign in, please check credentials"))
+		log.Fatal(err)
+		return
+	}
+
+	accessToken := res.AccessToken
+
+	// Save accessKey to configuration
+	viper.Set("bot.accessKey", accessToken)
+	err = viper.WriteConfig()
+	if err != nil {
+		log.Println(p.Sprintf("matrix-soccerbot could not save the accessKey to config"))
+		log.Fatal(err)
+		return
+	}
+}
+
+// doInitialUpdate updates the config right after startup to catch up with joined/left rooms
+func doInitialUpdate(matrixClient *mautrix.Client, p *message.Printer) {
+	resp, err := matrixClient.JoinedRooms()
+	if err != nil {
+		log.Println(p.Sprintf("matrix-soccerbot could not read joined rooms, something is horribly wrong"))
+		log.Fatalln(err)
+	}
+
+	// Hand-off list to config helper
+	config.RoomConfigInitialUpdate(resp.JoinedRooms)
+}
+
+// handleMessageEvent wraps message handler taking the mautrix.Client and start timestamp as parameters
+func handleMessageEvent(matrixClient *mautrix.Client, startTs int64) mautrix.EventHandler {
 	return func(source mautrix.EventSource, evt *event.Event) {
 		if evt.Timestamp < (startTs * 1000) {
 			// Ignore old events
 			return
 		}
 
+		// Cast event to correct event type
 		content, ok := evt.Content.Parsed.(*event.MessageEventContent)
 
 		if !ok {
@@ -166,32 +182,34 @@ func handleMessageEvent(client *mautrix.Client, startTs int64) mautrix.EventHand
 			return
 		}
 
-		username, _, err := client.UserID.Parse()
+		username, _, err := matrixClient.UserID.Parse()
 		if err != nil {
 			log.Panicln("Invalid user id in client")
 		}
 
 		if !strings.HasPrefix(content.Body, "!"+username) &&
 			!strings.HasPrefix(content.Body, "@"+username) &&
-			!(strings.HasPrefix(content.Body, username) && strings.HasPrefix(content.FormattedBody, "<a href=\"https://matrix.to/#/"+client.UserID.String()+"\">")) {
+			!(strings.HasPrefix(content.Body, username) && strings.HasPrefix(content.FormattedBody, "<a href=\"https://matrix.to/#/"+matrixClient.UserID.String()+"\">")) {
 			return
 		}
 
-		handleCommand(content.Body, evt.Sender, evt.RoomID, client)
+		handleCommand(content.Body, evt.Sender, evt.RoomID, matrixClient)
 
 	}
 }
 
-func handleMemberEvent(client *mautrix.Client, startTs int64) func(source mautrix.EventSource, evt *event.Event) {
+// handleMemberEvent wraps m.room.member (invite, join, leave, ban etc.) handler taking the mautrix.Client and start timestamp as parameters
+func handleMemberEvent(matrixClient *mautrix.Client, startTs int64) func(source mautrix.EventSource, evt *event.Event) {
 	return func(source mautrix.EventSource, evt *event.Event) {
-		if *evt.StateKey != client.UserID.String() {
+		if *evt.StateKey != matrixClient.UserID.String() {
 			return
-		} // This does not concern us
+		} // This does not concern us, as we are not the subject
 		if evt.Timestamp < (startTs * 1000) {
 			// Ignore old events, TODO: Handle missed invites.
 			return
 		}
 
+		// Cast event to correct event type
 		content, ok := evt.Content.Parsed.(*event.MemberEventContent)
 
 		if !ok {
@@ -199,16 +217,19 @@ func handleMemberEvent(client *mautrix.Client, startTs int64) func(source mautri
 			return
 		}
 
+		// If it is an invite, accept it
 		if content.Membership == event.MembershipInvite {
-			doAcceptInvite(client, evt.RoomID)
+			doAcceptInvite(matrixClient, evt.RoomID)
 			return
 		}
 
+		// If it is our join event, set room to active
 		if content.Membership == event.MembershipJoin {
 			config.SetRoomConfigActive(evt.RoomID.String(), true)
 			return
 		}
 
+		// If we left or got banned, set room to inactive
 		if content.Membership.IsLeaveOrBan() {
 			config.SetRoomConfigActive(evt.RoomID.String(), false)
 			return
@@ -216,6 +237,18 @@ func handleMemberEvent(client *mautrix.Client, startTs int64) func(source mautri
 	}
 }
 
+// startSync starts the mautrix.Client sync for receiving events
+func startSync(matrixClient *mautrix.Client, p *message.Printer) {
+	err := matrixClient.Sync()
+	if err != nil {
+		log.Println(p.Sprintf("matrix-soccerbot has encountered a fatal error whilst syncing"))
+		log.Println(err)
+		os.Exit(2)
+	}
+	log.Println("sync exited.")
+}
+
+// formattedMessage is a helper struct for sending HTML content
 type formattedMessage struct {
 	Type          string `json:"msgtype"`
 	Body          string `json:"body"`

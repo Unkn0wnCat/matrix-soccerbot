@@ -27,6 +27,7 @@ import (
 	"maunium.net/go/mautrix/id"
 )
 
+// isInRoom checks if the given mautrix.Client is joined in the given room
 func isInRoom(client *mautrix.Client, id id.RoomID) (bool, error) {
 	res, err := client.JoinedRooms()
 	if err != nil {
@@ -36,12 +37,14 @@ func isInRoom(client *mautrix.Client, id id.RoomID) (bool, error) {
 	for _, joinedRoom := range res.JoinedRooms {
 		if joinedRoom == id {
 			return true, nil
-		}
+		} // If this is the room we're searching for, return from function
 	}
 
+	// If we arrived here there is no room we joined with the given ID
 	return false, nil
 }
 
+// doAcceptInvite accepts the invite to the given room with the given mautrix.Client
 func doAcceptInvite(client *mautrix.Client, id id.RoomID) {
 	p := message.NewPrinter(language.MustParse(viper.GetString("language")))
 

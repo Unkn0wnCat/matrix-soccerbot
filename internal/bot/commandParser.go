@@ -24,37 +24,46 @@ import (
 	"strings"
 )
 
+// handleCommand takes a command, parses it and executes any actions it implies
 func handleCommand(command string, sender id.UserID, id id.RoomID, client *mautrix.Client) {
-	username, _, err := client.UserID.Parse()
+	myUsername, _, err := client.UserID.Parse()
 	if err != nil {
 		log.Panicln("Invalid user id in client")
 	}
 
-	command = strings.TrimPrefix(command, "!")
-	command = strings.TrimPrefix(command, "@")
-	command = strings.TrimPrefix(command, username)
+	command = strings.TrimPrefix(command, "!")        // Remove !
+	command = strings.TrimPrefix(command, "@")        // Remove @
+	command = strings.TrimPrefix(command, myUsername) // Remove our own username
+	command = strings.TrimPrefix(command, ":")        // Remove : (as in "@soccerbot:")
 	command = strings.TrimSpace(command)
 
+	// TODO: Remove this, it is debug!
 	log.Println(command)
 
+	// Is this a help command?
 	if strings.HasPrefix(command, "help") {
 		commandHelp(sender, id, client)
 		return
 	}
 
+	// Is this a setlang command?
 	if strings.HasPrefix(command, "setlang") {
 		commandSetLang(strings.TrimPrefix(command, "setlang"), sender, id, client)
 		return
 	}
 
+	// No match :( - display help
 	commandHelp(sender, id, client)
 	return
 }
 
-func commandSetLang(params string, sender id.UserID, id id.RoomID, client *mautrix.Client) {
-	// TODO
+func commandSetLang(_ string, _ id.UserID, _ id.RoomID, _ *mautrix.Client) {
+	// TODO: Create this command
 }
 
-func commandHelp(sender id.UserID, id id.RoomID, client *mautrix.Client) {
-	client.SendNotice(id, "matrix-soccerbot help\n\n!soccerbot help - shows this help")
+func commandHelp(_ id.UserID, id id.RoomID, client *mautrix.Client) {
+	// TODO: Improve help message
+
+	// Ignore errors as we can't do anything about them, the user will probably retry
+	_, _ = client.SendNotice(id, "matrix-soccerbot help\n\n!soccerbot help - shows this help")
 }

@@ -14,6 +14,7 @@
  * limitations under the License.
  *
  */
+
 package main
 
 import "github.com/Unkn0wnCat/matrix-soccerbot/cmd"

@@ -17,10 +17,17 @@
 
 package config
 
+// RoomConfigTree is a map from string to RoomConfig
 type RoomConfigTree map[string]RoomConfig
 
+// RoomConfig is the configuration attached to every joined room
 type RoomConfig struct {
+	// SubscribedLeagues are leagues for which new matches should be auto-posted
 	SubscribedLeagues []string `yaml:"leagues"`
-	Active            bool     `yaml:"active"`
-	Language          string   `yaml:"lang"`
+
+	// Active tells if the bot is active in this room (Set to false on leave/kick/ban)
+	Active bool `yaml:"active"`
+
+	// Language for the bot messages in this room, this has to exist
+	Language string `yaml:"lang"`
 }

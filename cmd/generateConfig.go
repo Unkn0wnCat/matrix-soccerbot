@@ -24,7 +24,7 @@ import (
 	"os"
 )
 
-// generateConfigCmd represents the generateConfig command
+// generateConfigCmd is a command to generate a config file
 var generateConfigCmd = &cobra.Command{
 	Use:   "generateConfig",
 	Short: "Generate a config file",
